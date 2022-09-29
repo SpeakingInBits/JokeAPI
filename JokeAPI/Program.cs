@@ -1,3 +1,5 @@
+using System.Reflection.Metadata.Ecma335;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -16,28 +18,27 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
+// Get array of Categories
+app.MapGet("/Categories", () =>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    return new string[] { "Programming Jokes", "Dad Jokes" };
+});
 
-app.MapGet("/weatherforecast", () =>
+// Get joke in specific category
+app.MapGet("/Joke", (string? category) =>
 {
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateTime.Now.AddDays(index),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+    if (category == null)
+    {
+        return "Here is a random joke for you :)";
+    }
+    
+    return $"Here is a {category} joke...some joke here..."; 
+});
+
+// Get joke working with category lists
+app.MapGet("/Joke/Categories", (string? includedCategories, string? excludedCategories) =>
+{
+    return $"Some joke within {includedCategories} but not in {excludedCategories}";
+});
 
 app.Run();
-
-internal record WeatherForecast(DateTime Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
