@@ -24,6 +24,18 @@ app.MapGet("/Categories", () =>
     return new string[] { "Programming Jokes", "Dad Jokes" };
 });
 
+// Get joke by id
+app.MapGet("/Joke/{id}", (int id) =>
+{
+    return "Here is a joke by id";
+});
+
+// Get total number of jokes in all categories
+app.MapGet("/Jokes/Count", () =>
+{
+    return "There are x amount of jokes";
+});
+
 // Get joke in specific category
 app.MapGet("/Joke", (string? category) =>
 {
