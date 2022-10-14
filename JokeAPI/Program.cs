@@ -1,9 +1,15 @@
+using JokeAPI.Models;
+using System.Reflection.Metadata.Ecma335;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddDbContext<JokeDbContext>(options =>
+    options.UseSqlLite())
 
 var app = builder.Build();
 
