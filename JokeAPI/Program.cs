@@ -1,8 +1,5 @@
 using JokeAPI.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using System.Configuration;
-using System.Reflection.Metadata.Ecma335;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +10,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<JokeDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddTransient<IJokeRepository, JokeRepository>();
 
 var app = builder.Build();
 
@@ -26,9 +25,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // Get array of Categories
-app.MapGet("/Categories", () =>
+app.MapGet("/Categories", async (IJokeRepository _jokeRepo) =>
 {
-    return new string[] { "Programming Jokes", "Dad Jokes" };
+    return await _jokeRepo.GetAllCategoryNames();
 });
 
 // Get joke by id
